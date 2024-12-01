@@ -31,6 +31,15 @@ class Account:
     def Get_Transaction_List(self):
         return self.__transactionList
 
+    def Get_Transaction_ID_List(self):
+        return self.__transactionIDList
+
+    def Get_Transfer_List(self):
+        return self.__transferList
+
+    def Get_Transfer_ID_List(self):
+        return self.__transferIDList
+
     def Create_Transaction(self, transactionType, amount, time, note):
         """
         Function to create new transaction
@@ -211,61 +220,47 @@ class Transaction:
     def Set_Catalog(self, newCatalog):
         self.__catalog = newCatalog
 
-    # def Edit_Transaction(self, transactionType, amount, time, note, catalog):
-    #     """Function to edit existed transaction
-    #     Parameters:
-    #         transactionID(str): The id of transaction want to delete
-    #         transactionType(str): The type of transaction want to create (Income or Spending)
-    #         amount(float): The amount of transaction want to create
-    #         time(datetime): The time of transaction want to create
-    #         note(str): The note of transaction want to create
-    #         catalog(str): The catalog of transaction want to create
-    #     Returns:
-    #         None
-    #     """
-    #     if (
-    #         transactionType.capitalize() != "Income"
-    #         or transactionType.capitalize() != "Spending"
-    #     ):
-    #         messagebox.showerror(
-    #             "Notification", "Transaction type must be Income or Spending!"
-    #         )
-    #     else:
-    #         self.transactionType = transactionType
+    def Edit_Transaction(self, transactionType, amount, time, note, catalog):
+        """Function to edit existed transaction
+        Parameters:
+            transactionID(str): The id of transaction want to edit
+            transactionType(str): The type of transaction want to edit (Income or Spending)
+            amount(float): The amount of transaction want to edit
+            time(datetime): The time of transaction want to edit
+            note(str): The note of transaction want to edit
+            catalog(str): The catalog of transaction want to edit
+        Returns:
+            None
+        """
+        if (
+            transactionType.capitalize() != "Income"
+            and transactionType.capitalize() != "Spending"
+        ):
+            messagebox.showerror(
+                "Notification", "Transaction type must be Income or Spending!"
+            )
+        else:
+            self.Set_Type(transactionType)
 
-    #     try:
-    #         self.amount = float(amount)
-    #     except ValueError:
-    #         messagebox.showerror("Notification", "amount must be float")
+        try:
+            self.Set_Amount(int(amount))
+        except ValueError:
+            messagebox.showerror("Notification", "amount must be integer")
 
-    #     # true format for time: DD/MM/YYYY
-    #     date_format = "%Y/%m/%d %H:%M:%S"
-    #     try:
-    #         date_format = "%d/%m/%Y %H:%M:%S"
-    #         self.time = time
-    #         dt = datetime.datetime.strptime(time, date_format)
-    #     except ValueError:
-    #         messagebox.showerror(
-    #             "Notification", "Date time must be in format DD/MM/YYYY !"
-    #         )
-    #     self.note = note
-    #     print("Catalog hint")
-    #     for key in catalog_hint.keys():
-    #         print(f"{key}. {catalog_hint[key]}")
-    #     try:
-    #         choice = int(input("Enter your choice (corresponding number): "))
-    #     except ValueError:
-    #         messagebox.showerror("Notification", "Error catalog input!")
-    #     else:
-    #         if catalog.capitalize() not in catalog_hint.values():
-    #             messagebox.showerror("Notification", "Error catalog input!")
-    #         else:
-    #             self.catalog = catalog
-    # if newTransaction.Get_Catalog().capitalize() not in catalog_hint.values():
-    #     messagebox.showerror("Notification", "Error catalog input!")
-    # else:
-    #     newTransaction.Set_Catalog(catalog)
-    # self.__transactionList.append(newTransaction)
+        # true format for time: DD/MM/YYYY
+        try:
+            dateFormat = "%d/%m/%Y %H:%M:%S"
+            self.Set_Time(datetime.datetime.strptime(time, dateFormat))
+        except ValueError:
+            messagebox.showerror(
+                "Notification", "Date time must be in format DD/MM/YYYY !"
+            )
+        self.Set_Note(note)
+        global catalog_hint
+        if catalog.capitalize() not in catalog_hint.values():
+            messagebox.showerror("Notification", "Error catalog input!")
+        else:
+            self.Set_Catalog(catalog)
 
     def GetTransactionHistory(TransactionID):
         """Function to get transaction history
@@ -336,9 +331,21 @@ newAccount.Create_Transaction("Spending", 200000, "22/11/2011 11:12:13", "Hi")
 newAccount.Create_Transaction("IncomE", 500000, "22/11/2011 11:12:13", "Hello")
 # lst = newAccount.Get_Transaction_List()
 # print(str(lst[0].Get_Time()))
-for account in newAccount.Get_Transaction_List():
-    print(account)
-n = int(input())
-newAccount.Delete_Transaction(n)
-for account in newAccount.Get_Transaction_List():
-    print(account)
+for transaction in newAccount.Get_Transaction_List():
+    print(transaction)
+transactionID = int(input())
+# newAccount.Delete_Transaction(transactionID)
+
+if transactionID not in newAccount.Get_Transaction_ID_List():
+    messagebox.showerror("notifications", "Transfer id isn't found! Can't edit")
+else:
+    for transaction in newAccount.Get_Transaction_List():
+        if transaction.Get_ID() == transactionID:  # Hien rang dieu kien ben ngoai
+            transaction.Edit_Transaction(
+                "Spendings", 200000, "22/11/2011 11:12:13", "Hi", "Moving"
+            )
+            found = True
+
+
+for transaction in newAccount.Get_Transaction_List():
+    print(transaction)
