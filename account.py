@@ -54,6 +54,7 @@ class Account:
         for transaction in self.__transactionList:
             if transactionID == transaction.Get_ID():
                 messagebox.showerror("Notification","This transaction id already exists!")
+                return
         newTransaction = Transaction(transactionID, transactionType, amount, time, note)
         if transactionType == "Income":
             self.__balance += amount
