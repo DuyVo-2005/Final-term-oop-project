@@ -21,32 +21,9 @@ class Account:
         
         
     """Make money transfers between internal accounts"""
-    # def Transfer(self, transferID, accountNameDestination, amount, time):
-    #     action = Transfer(transferID, self.__accountName, accountNameDestination, amount, time)        
-    #     action.Make_Transfer()
-    #     self.__balance -= amount
-    def Make_Transfer(self, sourceAccount, destinationAccount, amount):
-        """Function to make transfer from sourceAccount to destinationAccount with the amount of money is amount
-        Parameters:
-            sourceAccount (class): the source account class makes a money transfer
-            destinationAccount (class): the destination account class receives a money transfer
-        Returns:
-            None
-        """
-        if self.__balance < amount:
-            messagebox.showerror("Notification", "You don't have enough money for transfer")
-        else:
-            newTransfer = Transfer()
-            newTransfer.transferID = random.randint(1, 10000000000)
-            while newTransfer.transferID in self.transferIDList:
-                newTransfer.transferID = random.randint(1, 10000000000)
-            self.transferIDList.append(newTransfer.transferID)
-            newTransfer.accountNameSource = sourceAccount.accountName
-            newTransfer.accountNameDestination = destinationAccount.accountName
-            sourceAccount.balnace -= amount
-            destinationAccount.balnace += amount
-            newTransfer.amount = amount
-            self.transferList.append(newTransfer)
+    def Transfer(self, transferID, destinationAccount, amount, time):
+        action = Transfer(transferID, self.__accountName, accountNameDestination, amount, time)        
+        action.Make_Transfer(self.__accountName, destinationAccount, amount)
         
     
     """Create a new transaction"""
