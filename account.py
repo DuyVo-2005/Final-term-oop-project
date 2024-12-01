@@ -86,7 +86,7 @@ class Account:
         else:
             for transaction in self.__transactionList:
                 if transactionID == transaction.Get_ID():
-                    self.__transactionList.remove(transaction)
+                    transaction.Edit_Transaction(transactionType, amount, time, note, catalog)
                     messagebox.showinfo("Notification","Update Successfully!")
                     break
         
