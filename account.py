@@ -93,19 +93,19 @@ class Account:
                 
     """Get the current balance in the account"""    
     def Get_Balance(self):
-        return self.balance
+        return self.__balance
     
      
     """View the history of transaction types (income/spending) made"""
     def Show_Transaction_History(self, dateTime):
-        for transaction in self.transactionList:
+        for transaction in self.__transactionList:
             if transaction.Get_Time() == dateTime:
                 transaction.Get_Transaction_History()
     
     
     """Filter the list of catalogs"""
     def Classify_Catalog(self, newCatalog):
-        for transaction in self.transactionList:
+        for transaction in self.__transactionList:
             if newCatalog == transaction.Get_New_Catalog():
                 print(transaction)
         
