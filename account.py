@@ -25,7 +25,7 @@ class Account:
     #     action = Transfer(transferID, self.__accountName, accountNameDestination, amount, time)        
     #     action.Make_Transfer()
     #     self.__balance -= amount
-    def Make_Transfer(self, destinationAccount, amount):
+    def Make_Transfer(self, sourceAccount, destinationAccount, amount):
         """Function to make transfer from sourceAccount to destinationAccount with the amount of money is amount
         Parameters:
             sourceAccount (class): the source account class makes a money transfer
