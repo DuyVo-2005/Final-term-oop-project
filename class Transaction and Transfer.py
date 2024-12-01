@@ -18,8 +18,9 @@ other_index = int(6)
 
 
 class Account:
-    def __init__(self, balnace=0):
+    def __init__(self, balnace=0, accountName=""):
         self.__balnace = balnace
+        self.__accountName = accountName
         self.__transactionList = []
         self.__transactionIDList = []
         self.__transferList = []
@@ -27,6 +28,9 @@ class Account:
 
     def Get_Balnace(self):
         return self.__balnace
+
+    def Set_Balnace(self, newBalnace):
+        self.__balnace = newBalnace
 
     def Get_Transaction_List(self):
         return self.__transactionList
@@ -39,6 +43,9 @@ class Account:
 
     def Get_Transfer_ID_List(self):
         return self.__transferIDList
+
+    def Get_Account_Name(self):
+        return self.__accountName
 
     def Create_Transaction(self, transactionType, amount, time, note):
         """
@@ -111,6 +118,14 @@ class Account:
             self.Get_Transaction_List().append(newTransaction)
 
     def Delete_Transaction(self, transactionID):
+        """
+        Function to delete existed transaction
+        Parameters:
+            self (self@Account): the class itself
+            transactionID (str): The if of transaction want to delete
+        Returns:
+            None
+        """
         if len(self.__transactionList) == 0:
             messagebox.showerror(
                 "Notification", "Transation list is empty! Can't delele!"
@@ -127,44 +142,37 @@ class Account:
                 if transaction_.Get_ID() != transactionID
             ]
 
-    def Make_Transfer(self, sourceAccount, destinationAccount, amount):
-        """Function to make transfer from sourceAccount to destinationAccount with the amount of money is amount
-        Parameters:
-            sourceAccount (class): the source account class makes a money transfer
-            destinationAccount (class): the destination account class receives a money transfer
-        Returns:
-            None
-        """
-        if sourceAccount.balnace < amount:
-            messagebox.showerror(
-                "Notification", "You don't have enough money for transfer"
-            )
-        else:
-            newTransfer = Transfer()
-            newTransfer.transferID = random.randint(1, 10000000000)
-            while newTransfer.transferID in self.transferIDList:
-                newTransfer.transferID = random.randint(1, 10000000000)
-            self.transferIDList.append(newTransfer.transferID)
-            newTransfer.accountNameSource = sourceAccount.accountName
-            newTransfer.accountNameDestination = destinationAccount.accountName
-            sourceAccount.balnace -= amount
-            destinationAccount.balnace += amount
-            newTransfer.amount = amount
-            self.transferList.append(newTransfer)
-
     def Classify_Transaction(self):
         """Function to classify catalog transaction
         Parameters:
-            None
+            self (self@Account): the class itself
         Returns:
             None
         """
         temporaryTransactionList = sorted(
-            self.transactionList.copy(),
-            key=lambda transaction_class: transaction_class.catalog,
+            self.Get_Transaction_List().copy(),
+            key=lambda transaction_class: transaction_class.Get_Catalog(),
         )
         for transaction in temporaryTransactionList:
             print(transaction)
+
+    def Get_Transaction_History(self):
+        """Function to get transaction history
+        Parameters:
+            self (self@Account): the class itself
+        Returns:
+            List: array contains transaction history list after sorting by datetime
+        """
+        if len(self.Get_Transaction_List()) == 0:
+            messagebox.showinfo("Transaction history is empty!")
+        else:
+            transactionHistoryList = sorted(
+                self.Get_Transaction_List().copy(),
+                key=lambda transaction: transaction.Get_Time(),
+            )
+            # for transaction in transactionHistoryList:
+            #     print(transaction)
+            return transactionHistoryList
 
 
 class Transaction:
@@ -212,7 +220,7 @@ class Transaction:
         return self.__note
 
     def Set_Note(self, newNote):
-        self.note = newNote
+        self.__note = newNote
 
     def Get_Catalog(self):
         return self.__catalog
@@ -225,7 +233,7 @@ class Transaction:
         Parameters:
             transactionID(str): The id of transaction want to edit
             transactionType(str): The type of transaction want to edit (Income or Spending)
-            amount(float): The amount of transaction want to edit
+            amount(int): The amount of transaction want to edit
             time(datetime): The time of transaction want to edit
             note(str): The note of transaction want to edit
             catalog(str): The catalog of transaction want to edit
@@ -253,7 +261,7 @@ class Transaction:
             self.Set_Time(datetime.datetime.strptime(time, dateFormat))
         except ValueError:
             messagebox.showerror(
-                "Notification", "Date time must be in format DD/MM/YYYY !"
+                "Notification", "Date time must be in format DD/MM/YYYY HH:MM:SS!"
             )
         self.Set_Note(note)
         global catalog_hint
@@ -262,19 +270,8 @@ class Transaction:
         else:
             self.Set_Catalog(catalog)
 
-    def GetTransactionHistory(TransactionID):
-        """Function to get transaction history
-        Parameters:
-            AccountName (string): The name of account want to get transaction history
-        Returns:
-            List: array contains transaction history list
-        """
-        for Transaction_ in super().Transaction_List:
-            if Transaction_.TransactionID == TransactionID:
-                return Transaction_
-
     def __str__(self):
-        return f"{self.__transactionID} | {self.__time} | {self.__transactionType} | {self.__amount} | {self.__catalog}"
+        return f"{self.__transactionID} | {self.__time} | {self.__transactionType} | {self.__amount} | {self.__note} | {self.__catalog}"
 
 
 # class transfer plays role such as a struct
@@ -324,28 +321,69 @@ class Transfer:
     def Set_Time(self, newTime):
         self.__time = newTime
 
+    def Make_Transfer(self, sourceAccount, destinationAccount, amount):
+        """Function to make transfer from sourceAccount to destinationAccount with the amount of money is amount
+        Parameters:
+            sourceAccount (class): the source account class makes a money transfer
+            destinationAccount (class): the destination account class receives a money transfer
+            amount (int): the amount of money transfer
+        Returns:
+            None
+        """
+        if sourceAccount.Get_Balnace() < amount:
+            messagebox.showerror(
+                "Notification", "You don't have enough money for transfer"
+            )
+        else:
+            self.Set_ID(random.randint(1, 10000000000))
+            while self.__transferID in sourceAccount.Get_Transfer_ID_List():
+                self.__transferID = random.randint(1, 10000000000)
+            sourceAccount.Get_Transfer_ID_List().append(self.__transferID)
+            destinationAccount.Get_Transfer_ID_List().append(self.__transferID)
+            self.__accountNameSource = sourceAccount.Get_Account_Name()
+            self.__accountNameDestination = destinationAccount.Get_Account_Name()
+            sourceAccount.Set_Balnace(sourceAccount.Get_Balnace() - amount)
+            destinationAccount.Set_Balnace(destinationAccount.Get_Balnace() + amount)
+            self.__amount = amount
+            sourceAccount.Get_Transfer_List().append(self)
+            destinationAccount.Get_Transfer_List().append(self)
 
-newAccount = Account(100000)
+
+newAccount = Account(100000, "A")
+newAccount2 = Account(200000, "B")
+newTransfer = Transfer()
+newTransfer.Make_Transfer(newAccount, newAccount2, 50000)
+print(newAccount.Get_Balnace())
+print(newAccount2.Get_Balnace())
+print(newAccount.Get_Transfer_List())
+print(newAccount2.Get_Transfer_List())
 # print(newAccount.Get_Balnace())
-newAccount.Create_Transaction("Spending", 200000, "22/11/2011 11:12:13", "Hi")
-newAccount.Create_Transaction("IncomE", 500000, "22/11/2011 11:12:13", "Hello")
+
+# newAccount.Create_Transaction("Spending", 200000, "22/11/2011 11:12:13", "Hi")
+# newAccount.Create_Transaction("IncomE", 500000, "25/11/2011 11:12:13", "Hello")
+# newAccount.Create_Transaction("Spending", 200000, "23/11/2011 11:12:13", "Hu")
+# newAccount.Create_Transaction("IncomE", 500000, "26/11/2011 11:12:13", "Hello")
+# newAccount.Create_Transaction("Spending", 200000, "29/11/2011 11:12:13", "a")
+# newAccount.Create_Transaction("IncomE", 500000, "29/11/2011 11:12:13", "o")
+# newAccount.Create_Transaction("Spending", 200000, "1/11/2011 11:12:13", "r")
+# newAccount.Create_Transaction("IncomE", 500000, "12/11/2011 11:12:13", "t")
+
 # lst = newAccount.Get_Transaction_List()
 # print(str(lst[0].Get_Time()))
-for transaction in newAccount.Get_Transaction_List():
-    print(transaction)
-transactionID = int(input())
 # newAccount.Delete_Transaction(transactionID)
 
-if transactionID not in newAccount.Get_Transaction_ID_List():
-    messagebox.showerror("notifications", "Transfer id isn't found! Can't edit")
-else:
-    for transaction in newAccount.Get_Transaction_List():
-        if transaction.Get_ID() == transactionID:  # Hien rang dieu kien ben ngoai
-            transaction.Edit_Transaction(
-                "Spendings", 200000, "22/11/2011 11:12:13", "Hi", "Moving"
-            )
-            found = True
+# if transactionID not in newAccount.Get_Transaction_ID_List():
+#     messagebox.showerror("notifications", "Transfer id isn't found! Can't edit")
+# else:
+#     for transaction in newAccount.Get_Transaction_List():
+#         if transaction.Get_ID() == transactionID:  # Hien rang dieu kien ben ngoai
+#             transaction.Edit_Transaction(
+#                 "Spending", "200000", "22/11/2011 11:12:13", "Hi", "Moving"
+#             )
 
 
-for transaction in newAccount.Get_Transaction_List():
-    print(transaction)
+# for transaction in newAccount.Get_Transaction_List():
+#     print(transaction)
+# transactionID = int(input())
+# newAccount.Get_Transaction_History()
+# newAccount.Classify_Transaction()
