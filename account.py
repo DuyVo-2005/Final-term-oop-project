@@ -128,14 +128,4 @@ class Account:
     """Get the current balance in the account"""    
     def Get_Balance(self):
         return self.__balance
-                 
-    
-    
-    """Filter the list of catalogs"""
-    def Classify_Catalog(self, newCatalog):
-        for transaction in self.__transactionList:
-            if newCatalog == transaction.Get_New_Catalog():
-                print(transaction)
-        
-                
-            
+
