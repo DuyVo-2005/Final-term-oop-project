@@ -29,19 +29,24 @@ class Account:
     def Get_Acount_Name(self) -> str:
         return self.__accountName
     
+    def Set_Account_Name(self, newAccountName):
+        self.__accountName = newAccountName
     
     def Get_Acount_Type(self) -> str:
         return self.__accountType
     
+    def Set_Account_Type(self, newAccountType):
+        self.__accountType = newAccountType
     
     def Get_Balance(self) -> int:
         return self.__balance
     
-
+    def Set_Balance(self, newBalance):
+        self.__balance = newBalance
+    
     def Get_Transaction_List(self):
         return self.__transactionList
-    
-    
+           
     def Get_Transfer_List(self):
         return self.__transferList
         
