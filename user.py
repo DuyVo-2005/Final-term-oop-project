@@ -1,127 +1,76 @@
+from account import Account
+from trans import Transfer
+import random
+
 class User:
-    def __init__(self, userName: str) -> None:
-        self.__userName = userName
+    def __init__(self) -> None:
         self.__accountsList = []
-        self.__debtList = []
+        self.__transferList = []
 
-    def Get_Name(self) -> str:
-        return self.__userName
+    def __CreateID(self) -> int:
+        __listID = []
+        for Trans in self.__transferList:
+            __listID.append(Trans.Get_ID())
 
-    def Set_Name(self, userName: str) -> None:
-        self.__userName = userName
+        __thisTranID = random.randint(100_000, 999_999)
+        while __thisTranID in __listID:
+            __thisTranID = random.randint(100_000, 999_999)
 
-    def Get_Account_List(self) -> str:
+        return __thisTranID
+
+    def Get_Account_List(self) -> list:
         return self.__accountsList
-
-    def Get_Account(self, accountName: str) -> Account:
+    
+    def Get_Transfer_List(self) -> list:
+        return self.__transferList
+    
+    def Get_Account_By_Name(self, accountName: str) -> Account:
         for account in self.__accountsList:
             if account.Get_Account_Name() == accountName:
                 return account
+        return None
+    
+    def Get_Transfer_By_ID(self, ID: int) -> Transfer:
+        for trans in self.__transferList:
+            if trans.Get_ID() == ID:
+                return trans
+            
+        return None   
 
-    def Set_Accounts(self, accounts: list) -> None:
-        self.__accountsList = accounts
-
-    def Get_Debt_List(self) -> list:
-        return self.__debtList
-
-    def Add_Account(self, account: "Account") -> None:
-        """
-        Adds an account to the user's list of accounts.
-        Parameters:
-            account (Account): The account to be added.
-        Returns:
-            None
-        """
+    def Add_Account(self, account: Account):
         self.__accountsList.append(account)
 
-    def Delete_Account(self, accountID: str) -> None:
-        """
-        Deletes an account from the user's list based on account ID.
-        Parameters:
-            accountID (str): The ID of the account to be deleted.
-        Returns:
-            None
-        """
-        self.__accountsList = [account for account in self.__accountsList if account.get_accountID() != accountID]
+    def Create_Transfer(self, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = ""):
+        sourceAccount = self.Get_Account_By_Name(sourceAccountName)
+        desAccount = self.Get_Account_By_Name(desAccountName)
 
-    def View_Balance(self) -> None:
-        """
-        Displays the total balance of all accounts and details for each account.
-        Parameters:
-            None
-        Returns:
-            None
-        """
-        totalbalance = sum(account.get_balance() for account in self.__accountsList)
-        print(f"Total balance: {totalbalance}")
-        for account in self.__accountsList:
-            print(account)
+        newTransfer = Transfer(ID=self.__CreateID(), amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
+        sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount)
+        desAccount.Set_Balance(desAccount.Get_Balance() + amount)
+        self.__transferList.append(newTransfer)
 
-    def Add_Debt(self, otherID: str, amount: float, debtDate: str, dueDate: str, interestRate: float, debtType: str) -> Debt:
-        """
-        Adds a new debt to the user's debt list.
-        Parameters:
-            otherID (str): The ID of the person or entity the debt is with.
-            amount (float): The amount of the debt.
-            debtDate (str): The date the debt was created (in "YYYY-MM-DD" format).
-            dueDate (str): The due date for the debt (in "YYYY-MM-DD" format).
-            interestRate (float): The interest rate for the debt.
-            debtType (str): Type of debt, either 'Borrower' or 'Lender'.
-        Returns:
-            Debt: The Debt object that was added to the list.
-        """
-        debtID = len(self.__debtList) + 1
-        newDebt = Debt(debtID, otherID, amount, debtDate, dueDate, interestRate, debtType, status="Active")
-        self.__debtList.append(newDebt)
-        if debtType == "Borrower":
-            print(f"{self.__userName} borrowed {amount} from {otherID}. Debt ID: {debtID} created.")
-        else:
-            print(f"{self.__userName} lent {amount} to {otherID}. Debt ID: {debtID} created.")
-        return newDebt
-
-    def Delete_Debt(self, debtID: str) -> None:
-        """
-        Deletes a debt from the user's debt list based on the debt ID.
-        Parameters:
-            debtID (str): The ID of the debt to be deleted.     
-        Returns:
-            None
-        """
-        self.__debtList = [debt for debt in self.__debtList if debt.get_debtID() != debtID]
-
-    def Update_Debt(self, debtID: str, newAmount: float = None, newDueDate: str = None, newInterestRate: float = None, newStatus: str = None) -> bool:
-        """
-        Updates an existing debt's details such as amount, due date, interest rate, or status.
-        Parameters:
-            debtID (str): The ID of the debt to be updated.
-            newAmount (float, optional): The new debt amount (if any).
-            newDueDate (str, optional): The new due date (if any).
-            newInterestRate (float, optional): The new interest rate (if any).
-            newStatus (str, optional): The new status of the debt (if any).
-        Returns:
-            bool: True if the debt was updated successfully, False if the debt ID was not found.
-        """
-        debt = next((debt for debt in self.__debtList if debt.get_debtID() == debtID), None)
-        if debt:
-            if newAmount is not None:
-                debt.set_amount(newAmount)
-            if newDueDate is not None:
-                debt.set_dueDate(newDueDate)
-            if newInterestRate is not None:
-                debt.set_interestRate(newInterestRate)
-            if newStatus is not None:
-                debt.set_status(newStatus)
-            print(f"Debt {debtID} updated successfully.")
+    def Delete_Transfer(self, ID: int) -> bool:
+        trans = self.Get_Transfer_By_ID(ID)
+        if trans:
+            sourceAccount = trans.Get_Source_Account()
+            desAccount = trans.Get_Des_Account()
+            amount = trans.Get_Amount()
+            sourceAccount.Set_Balance(sourceAccount.Get_Balance() + amount)
+            desAccount.Set_Balance(desAccount.Get_Balance() - amount)
+            self.__transferList.remove(trans)
             return True
-        else:
-            print(f"Debt with ID {debtID} not found.")
-            return False
+        
+        return False
 
-    def View_Debts(self) -> None:
-        """
-        Displays all debts associated with the user.
-        """
-        if not self.__debtList:
-            print("No debts yet.")
-        for debt in self.__debtList:
-            print(debt)
+    def Edit_Transfer(self, ID: int, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = "") -> bool:
+        if self.Delete_Transfer(ID):
+            sourceAccount = self.Get_Account_By_Name(sourceAccountName)
+            desAccount = self.Get_Account_By_Name(desAccountName)
+            newTransfer = Transfer(ID=ID, amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
+
+            sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount)
+            desAccount.Set_Balance(desAccount.Get_Balance() + amount)
+
+            self.__transferList.append(newTransfer)
+            return True
+        return False
