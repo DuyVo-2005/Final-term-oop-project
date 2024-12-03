@@ -45,8 +45,8 @@ class User:
         desAccount = self.Get_Account_By_Name(desAccountName)
 
         newTransfer = Transfer(ID=self.__CreateID(), amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
-        sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount)
-        desAccount.Set_Balance(desAccount.Get_Balance() + amount)
+        sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount, True)
+        desAccount.Set_Balance(desAccount.Get_Balance() + amount, True)
         self.__transferList.append(newTransfer)
 
     def Delete_Transfer(self, ID: int) -> bool:
@@ -55,8 +55,8 @@ class User:
             sourceAccount = trans.Get_Source_Account()
             desAccount = trans.Get_Des_Account()
             amount = trans.Get_Amount()
-            sourceAccount.Set_Balance(sourceAccount.Get_Balance() + amount)
-            desAccount.Set_Balance(desAccount.Get_Balance() - amount)
+            sourceAccount.Set_Balance(sourceAccount.Get_Balance() + amount, True)
+            desAccount.Set_Balance(desAccount.Get_Balance() - amount, True)
             self.__transferList.remove(trans)
             return True
         
@@ -68,8 +68,8 @@ class User:
             desAccount = self.Get_Account_By_Name(desAccountName)
             newTransfer = Transfer(ID=ID, amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
 
-            sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount)
-            desAccount.Set_Balance(desAccount.Get_Balance() + amount)
+            sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount, True)
+            desAccount.Set_Balance(desAccount.Get_Balance() + amount, True)
 
             self.__transferList.append(newTransfer)
             return True
