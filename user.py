@@ -1,16 +1,16 @@
 class User:
-    def __init__(self, userName):
+    def __init__(self, userName: str) -> None:
         self.__userName = userName
         self.__accountsList = []
         self.__debtList = []
 
-    def Get_Name(self):
+    def Get_Name(self) -> str:
         return self.__userName
 
-    def Set_Name(self, userName):
+    def Set_Name(self, userName: str) -> None:
         self.__userName = userName
 
-    def Get_Account_List(self):
+    def Get_Account_List(self) -> str:
         return self.__accountsList
 
     def Get_Account(self, accountName: str) -> Account:
@@ -18,13 +18,13 @@ class User:
             if account.Get_Account_Name() == accountName:
                 return account
 
-    def Set_Accounts(self, accounts):
+    def Set_Accounts(self, accounts: list) -> None:
         self.__accountsList = accounts
 
-    def Get_Debt_List(self):
+    def Get_Debt_List(self) -> list:
         return self.__debtList
 
-    def Add_Account(self, account):
+    def Add_Account(self, account: "Account") -> None:
         """
         Adds an account to the user's list of accounts.
         Parameters:
@@ -34,7 +34,7 @@ class User:
         """
         self.__accountsList.append(account)
 
-    def Delete_Account(self, accountID):
+    def Delete_Account(self, accountID: int) -> None:
         """
         Deletes an account from the user's list based on account ID.
         Parameters:
@@ -44,7 +44,7 @@ class User:
         """
         self.__accountsList = [account for account in self.__accountsList if account.get_accountID() != accountID]
 
-    def View_Balance(self):
+    def View_Balance(self) -> None:
         """
         Displays the total balance of all accounts and details for each account.
         Parameters:
@@ -57,11 +57,11 @@ class User:
         for account in self.__accountsList:
             print(account)
 
-    def Add_Debt(self, otherID, amount, debtDate, dueDate, interestRate, debtType):
+    def Add_Debt(self, otherID: int, amount: float, debtDate: str, dueDate: str, interestRate: float, debtType: str) -> Debt:
         """
         Adds a new debt to the user's debt list.
         Parameters:
-            otherID (str): The ID of the person or entity the debt is with.
+            otherID (int): The ID of the person or entity the debt is with.
             amount (float): The amount of the debt.
             debtDate (str): The date the debt was created (in "YYYY-MM-DD" format).
             dueDate (str): The due date for the debt (in "YYYY-MM-DD" format).
@@ -79,7 +79,7 @@ class User:
             print(f"{self.__userName} lent {amount} to {otherID}. Debt ID: {debtID} created.")
         return newDebt
 
-    def Delete_Debt(self, debtID):
+    def Delete_Debt(self, debtID: int) -> None:
         """
         Deletes a debt from the user's debt list based on the debt ID.
         Parameters:
@@ -89,7 +89,7 @@ class User:
         """
         self.__debtList = [debt for debt in self.__debtList if debt.get_debtID() != debtID]
 
-    def Update_Debt(self, debtID, newAmount=None, newDueDate=None, newInterestRate=None, newStatus=None):
+    def Update_Debt(self, debtID: int, newAmount: float = None, newDueDate: str = None, newInterestRate: float = None, newStatus: str = None) -> bool:
         """
         Updates an existing debt's details such as amount, due date, interest rate, or status.
         Parameters:
@@ -117,7 +117,7 @@ class User:
             print(f"Debt with ID {debtID} not found.")
             return False
 
-    def View_Debts(self):
+    def View_Debts(self) -> None:
         """
         Displays all debts associated with the user.
         """
