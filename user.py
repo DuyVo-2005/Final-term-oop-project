@@ -34,11 +34,11 @@ class User:
         """
         self.__accountsList.append(account)
 
-    def Delete_Account(self, accountID: int) -> None:
+    def Delete_Account(self, accountID: str) -> None:
         """
         Deletes an account from the user's list based on account ID.
         Parameters:
-            accountID (int): The ID of the account to be deleted.
+            accountID (str): The ID of the account to be deleted.
         Returns:
             None
         """
@@ -57,11 +57,11 @@ class User:
         for account in self.__accountsList:
             print(account)
 
-    def Add_Debt(self, otherID: int, amount: float, debtDate: str, dueDate: str, interestRate: float, debtType: str) -> Debt:
+    def Add_Debt(self, otherID: str, amount: float, debtDate: str, dueDate: str, interestRate: float, debtType: str) -> Debt:
         """
         Adds a new debt to the user's debt list.
         Parameters:
-            otherID (int): The ID of the person or entity the debt is with.
+            otherID (str): The ID of the person or entity the debt is with.
             amount (float): The amount of the debt.
             debtDate (str): The date the debt was created (in "YYYY-MM-DD" format).
             dueDate (str): The due date for the debt (in "YYYY-MM-DD" format).
@@ -79,21 +79,21 @@ class User:
             print(f"{self.__userName} lent {amount} to {otherID}. Debt ID: {debtID} created.")
         return newDebt
 
-    def Delete_Debt(self, debtID: int) -> None:
+    def Delete_Debt(self, debtID: str) -> None:
         """
         Deletes a debt from the user's debt list based on the debt ID.
         Parameters:
-            debtID (int): The ID of the debt to be deleted.     
+            debtID (str): The ID of the debt to be deleted.     
         Returns:
             None
         """
         self.__debtList = [debt for debt in self.__debtList if debt.get_debtID() != debtID]
 
-    def Update_Debt(self, debtID: int, newAmount: float = None, newDueDate: str = None, newInterestRate: float = None, newStatus: str = None) -> bool:
+    def Update_Debt(self, debtID: str, newAmount: float = None, newDueDate: str = None, newInterestRate: float = None, newStatus: str = None) -> bool:
         """
         Updates an existing debt's details such as amount, due date, interest rate, or status.
         Parameters:
-            debtID (int): The ID of the debt to be updated.
+            debtID (str): The ID of the debt to be updated.
             newAmount (float, optional): The new debt amount (if any).
             newDueDate (str, optional): The new due date (if any).
             newInterestRate (float, optional): The new interest rate (if any).
