@@ -25,6 +25,25 @@ class Account:
 
         return __thisTranID
 
+
+    def Get_Acount_Name(self) -> str:
+        return self.__accountName
+    
+    
+    def Get_Acount_Type(self) -> str:
+        return self.__accountType
+    
+    
+    def Get_Balance(self) -> int:
+        return self.__balance
+    
+
+    def Get_Transaction_List(self):
+        return self.__transactionList
+    
+    
+    def Get_Transfer_List(self):
+        return self.__transferList
         
         
     """Edit account information such as account type, account name and balance"""
