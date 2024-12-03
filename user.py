@@ -13,6 +13,11 @@ class User:
     def Get_Accounts(self):
         return self.__accountsList
 
+    def Get_Account(self, accountName: str) -> Account:
+        for account in self.__accountsList:
+            if account.Get_Account_Name() == accountName:
+                return account
+
     def Set_Accounts(self, accounts):
         self.__accountsList = accounts
 
