@@ -57,12 +57,9 @@ class Transfer(Trans):
             )
             return False
         else:
-            self.Set_ID(sourceAccount.__CreateID())
             self.__accountNameSource = sourceAccount.Get_Account_Name()
             self.__accountNameDestination = destinationAccount.Get_Account_Name()
-            sourceAccount.Set_Balnace(sourceAccount.Get_Balnace() - amount)
-            destinationAccount.Set_Balnace(destinationAccount.Get_Balnace() + amount)
+            sourceAccount.Set_Balnace(sourceAccount.Get_Balnace() +self.__amount - amount)
+            destinationAccount.Set_Balnace(destinationAccount.Get_Balnace() - self.__account + amount)
             self.__amount = amount
-            sourceAccount.Get_Transfer_List().append(self)
-            destinationAccount.Get_Transfer_List().append(self)
         return True
