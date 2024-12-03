@@ -29,9 +29,11 @@ class Account():
     def Set_Account_Type(self, newAccountType: str):
         self.__accountType = newAccountType
     
-    def Set_Balance(self, newBalance: int):
+    def Set_Balance(self, newBalance: int, isTrans: bool):
+        if not isTrans:
+            t = newBalance - self.__balance
+            self.__initBalance = self.__balance + t
         self.__balance = newBalance
-        self.__initBalance = newBalance
 
     def __CreateID(self) -> int:
         __listID = []
