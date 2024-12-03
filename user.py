@@ -10,7 +10,7 @@ class User:
     def Set_Name(self, userName):
         self.__userName = userName
 
-    def Get_Accounts(self):
+    def Get_Account_List(self):
         return self.__accountsList
 
     def Get_Account(self, accountName: str) -> Account:
@@ -20,6 +20,9 @@ class User:
 
     def Set_Accounts(self, accounts):
         self.__accountsList = accounts
+
+    def Get_Debt_List(self):
+        return self.__debtList
 
     def Add_Account(self, account):
         """
