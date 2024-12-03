@@ -10,7 +10,6 @@ class Account:
         self.__balance = balance
         self.__transactionList = []
         self.__transferList = []
-        self.__DebtList = []
 
 
     def __CreateID(self) -> int:
@@ -25,9 +24,6 @@ class Account:
             __thisTranID = random.randint(10_000_000, 99_999_999)
 
         return __thisTranID
-    
-    def __GetPresentTime(self) -> str:
-        pass
 
         
         
@@ -43,9 +39,9 @@ class Account:
         
         
     """Make money transfers between internal accounts"""
-    def Create_Transfer(self, destinationAccount: str, amount: int, ID: int = 0, time: str = "DD/MM/YYYY HH:MM:SS"):
-        if time == "DD/MM/YYYY HH:MM:SS":
-            time = self.__GetPresentTime()
+    def Create_Transfer(self, destinationAccount: str, amount: int, ID: int = 0, time: str = "DD/MM/YYYY"):
+        if time == "DD/MM/YYYY":
+            time = GetPresentTime()
         
         if ID == 0:
             newTransfer = Transfer(self.__CreateID(), self.__accountName, destinationAccount, amount, time)  
@@ -58,9 +54,9 @@ class Account:
         
     
     """Create a new transaction"""
-    def Create_Transaction(self, transactionType: str, amount: int, ID: int = 0, time: str = "DD/MM/YYYY HH:MM:SS", note: str = ""):
-        if time == "DD/MM/YYYY HH:MM:SS":
-            time = self.__GetPresentTime()
+    def Create_Transaction(self, transactionType: str, amount: int, ID: int = 0, time: str = "DD/MM/YYYY", note: str = ""):
+        if time == "DD/MM/YYYY":
+            time = GetPresentTime()
             
         if ID == 0:
             newTransaction = Transaction(self.__CreateID(), transactionType, amount, time, note)
@@ -71,17 +67,17 @@ class Account:
          
          
          
-    """Create a new Debt"""
-    def Create_Debt(self, debtType: str, amout: int, interestRate: float, status: bool, ID: int = 0, debtDate: str = "DD/MM/YYYY HH:MM:SS", dueDate: str = "DD/MM/YYYY HH:MM:SS"):
-        if time == "DD/MM/YYYY HH:MM:SS":
-            time = self.__GetPresentTime()
+    # """Create a new Debt"""
+    # def Create_Debt(self, debtType: str, amout: int, interestRate: float, status: bool, ID: int = 0, debtDate: str = "DD/MM/YYYY", dueDate: str = "DD/MM/YYYY"):
+    #     if time == "DD/MM/YYYY":
+    #         time = GetPresentTime()
         
-        if ID == 0:
-            newDebt = Debt(self.__CreateID(), debtType, amout, interestRate, status, debtDate, dueDate)
-        else:
-            newDebt = Debt(ID, debtType, amout, interestRate, status, debtDate, dueDate)
+    #     if ID == 0:
+    #         newDebt = Debt(self.__CreateID(), debtType, amout, interestRate, status, debtDate, dueDate)
+    #     else:
+    #         newDebt = Debt(ID, debtType, amout, interestRate, status, debtDate, dueDate)
             
-        self.__balance += newDebt.Get_Amount()
+    #     self.__balance += newDebt.Get_Amount()
         
     
     
@@ -90,23 +86,23 @@ class Account:
         for transaction in self.__transactionList:
             if transaction.Get_ID() == ID:
                 self.__transactionList.remove(transaction)
-                self.__balance += Get_Amount()
+                self.__balance += transaction.Get_Amount()
                 messagebox.showinfo("Notification","Delete Successfully!")
                 return True
         
         for transfer in self.__transferList:
             if transfer.Get_ID() == ID:
                 self.__transferList.remove(transfer)
-                self.__balance += Get_Amount()
+                self.__balance += transfer.Get_Amount()
                 messagebox.showinfo("Notification","Delete Successfully!")
                 return True
             
-        for debt in self.__DebtList:
-            if debt.Get_ID() == ID:
-                self.__DebtList.remove(debt)
-                self.__balance += Get_Amount
-                messagebox.showinfo("Notification","Delete Successfully!")
-                True
+        # for debt in self.__DebtList:
+        #     if debt.Get_ID() == ID:
+        #         self.__DebtList.remove(debt)
+        #         self.__balance += debt.Get_Amount()
+        #         messagebox.showinfo("Notification","Delete Successfully!")
+        #         True
                 
         return False
                 
@@ -117,23 +113,23 @@ class Account:
         for transaction in self.__transactionList:
             if transaction.Get_ID() == ID:
                 transaction.Edit_Transaction(transactionType, amount, time, note, catalog)
-                self.__balance += Get_Amount()
+                self.__balance += transaction.Get_Amount()
                 messagebox.showinfo("Notification","Update Successfully!")
                 return True
             
         for transfer in self.__transferList:
             if transfer.Get_ID() == ID:
                 transfer.Edit_Transfer("transactionType, amount, time, note, catalog")
-                self.__balance += Get_Amount()
+                self.__balance += transfer.Get_Amount()
                 messagebox.showinfo("Notification","Update Successfully!")
                 return True
         
-        for transaction in self.__transactionList:
-            if transaction.Get_ID() == ID:
-                transaction.Edit_Debt("transactionType, amount, time, note, catalog")
-                self.__balance += Get_Amount()
-                messagebox.showinfo("Notification","Update Successfully!")
-                return True
+        # for debt in self.__debtList:
+        #     if debt.Get_ID() == ID:
+        #         debt.Edit_Debt("transactionType, amount, time, note, catalog")
+        #         self.__balance += debt.Get_Amount()
+        #         messagebox.showinfo("Notification","Update Successfully!")
+        #         return True
         
         return False
                 
@@ -142,7 +138,4 @@ class Account:
     """Get the current balance in the account"""    
     def Get_Balance(self):
         return self.__balance
-                 
-        
-                
-            
+
