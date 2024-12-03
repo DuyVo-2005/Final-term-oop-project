@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 class Debt:
-    def __init__(self, debtID, otherID, amount, debtDate, dueDate, interestRate, debtType, status="Active"):
+    def __init__(self, debtID: str, otherID: str, amount: float, debtDate: str, dueDate: str, interestRate: float, debtType: str, status: str = "Active") -> None:
         self.__debtID = debtID
         self.__otherID = otherID
         self.__amount = amount
@@ -11,55 +11,55 @@ class Debt:
         self.__status = status
         self.__debtList = []
 
-    def Get_DebtID(self):
+    def Get_DebtID(self) -> str:
         return self.__debtID
 
-    def Set_DebtID(self, debtID):
+    def Set_DebtID(self, debtI: str) -> None):
         self.__debtID = debtID
 
-    def Get_OtherID(self):
+    def Get_OtherID(self) -> str:
         return self.__otherID
 
-    def Set_OtherID(self, otherID):
+    def Set_OtherID(self, otherID: str) -> None:
         self.__otherID = otherID
 
-    def Get_Amount(self):
+    def Get_Amount(self) -> float:
         return self.__amount
 
-    def Set_Amount(self, amount):
+    def Set_Amount(self, amount: float) -> None:
         self.__amount = amount
 
-    def Get_DebtDate(self):
+    def Get_DebtDate(self) -> datatime:
         return self.__debtDate
 
-    def Set_DebtDate(self, debtDate):
-        self.__debtDate = debtDate
+    def Set_DebtDate(self, debtDate: str) -> None:
+        self.__debtDate = datetime.strptime(debtDate, "%Y-%m-%d")
 
-    def Get_DueDate(self):
+    def Get_DueDate(self) -> datatime:
         return self.__dueDate
 
-    def Set_DueDate(self, dueDate):
-        self.__dueDate = dueDate
+    def Set_DueDate(self, dueDate: str) -> None:
+        self.__dueDate = datetime.strptime(dueDate, "%Y-%m-%d")
 
-    def Get_InterestRate(self):
+    def Get_InterestRate(self) -> float:
         return self.__interestRate
 
-    def Set_InterestRate(self, interestRate):
+    def Set_InterestRate(self, interestRate: float) -> None:
         self.__interestRate = interestRate
 
-    def Get_DebtType(self):
+    def Get_DebtType(self) -> str:
         return self.__debtType
 
-    def Set_DebtType(self, debtType):
+    def Set_DebtType(self, debtType: str) -> None:
         self.__debtType = debtType
 
-    def Get_Status(self):
+    def Get_Status(self) -> str:
         return self.__status
 
-    def Set_Status(self, status):
+    def Set_Status(self, status: str) -> None:
         self.__status = status
 
-    def Add_Payment(self, paymentAmount, paymentDate):
+    def Add_Payment(self, paymentAmount: float, paymentDate: str) -> None:
         """
         Adds a payment to the debt and updates the debt balance. 
         If the debt is fully paid, it updates the status to 'Paid'.
@@ -75,10 +75,10 @@ class Debt:
         if self.__amount <= 0:
             self.__status = "Paid"
 
-    def Get_PaymentHistory(self):
+    def Get_PaymentHistory(self) -> list:
         return self.__debtList
     
-    def Calculate_Interest(self, compound=False):
+    def Calculate_Interest(self, compound: bool = False) -> float:
          """
         Calculates the interest on the debt based on the interest rate and the duration.
         If "compound" is True, compound interest is calculated, otherwise, simple interest is applied.
@@ -95,7 +95,7 @@ class Debt:
             total_amount = self.__amount * (1 + (self.__interestRate / 100) * periods)
         return round(total_amount, 2)
     
-    def Reminder_Due_Date(self):
+    def Reminder_Due_Date(self) -> None:
          """
         Checks the due date of the debt and provides reminders if the debt is nearing its due date
         or is overdue.
@@ -115,7 +115,7 @@ class Debt:
             else:
                 print(f"Warning: Debt {self.__debtID} is overdue by {abs(days_to_due)} days.")
     
-    def Check_Due_Status(self):
+    def Check_Due_Status(self) -> None:
         """
         Checks if the debt is overdue based on the current date and updates the status to "Overdue"
         if the due date has passed.
@@ -128,7 +128,7 @@ class Debt:
         if self.__status == "Active" and today > self.__dueDate:
             self.__status = "Overdue"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Returns a string representation of the debt, including key details such as the debt amount,
         due date, status, interest rate, and payment history.
@@ -137,7 +137,11 @@ class Debt:
         Returns:
             str: A formatted string describing the debt details.
         """
-
+        self.check_due_status()
+        payments = len(self.__debtList)
+        return (f"Debt ID: {self.__debtID}, Other ID: {self.__otherID}, Amount: {self.__amount}, "
+                f"Debt Date: {self.__debtDate.date()}, Due Date: {self.__dueDate.date()}, Status: {self.__status}, "
+                f"Debt Type: {self.__debtType}, Interest Rate: {self.__interestRate}%, Payments: {payments}")
         self.check_due_status()
         payments = len(self.__debtList)
         return (f"Debt ID: {self.__debtID}, Other ID: {self.__otherID}, Amount: {self.__amount}, "
