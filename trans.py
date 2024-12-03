@@ -75,7 +75,7 @@ class Transaction(Trans):
         """Function to edit existed transaction
         Parameters:
             transactionID(str): The id of transaction want to edit
-            transType(str): The type of transaction want to edit (Income or Spending)
+            transType(str): The type of transaction want to edit (income or spending)
             amount(int): The amount of transaction want to edit
             time(datetime): The time of transaction want to edit
             note(str): The note of transaction want to edit
@@ -84,18 +84,18 @@ class Transaction(Trans):
             None
         """
         if (
-            transType.capitalize() != "Income"
-            and transType.capitalize() != "Spending"
+            transType.capitalize() != "income"
+            and transType.capitalize() != "spending"
         ):
             messagebox.showerror(
-                "Notification", "Transaction type must be Income or Spending!"
+                "Notification", "Transaction type must be income or spending!"
             )
             return False
         else:
             self.Set_Type(transType)
 
         try:
-            if transType.capitalize() != "Income":
+            if transType.capitalize() != "income":
                 self.Set_Amount(int(amount))
             else:
                 #transaction type is spending
