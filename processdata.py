@@ -8,8 +8,9 @@ TransactionDataPath = "data\\TransactionData.csv"
 TransferDataPath = "data\\TransferData.csv"
 DebtListPath = "data\\DebtList.txt"
 DebtPaymentDataPath = "data\\DebtPaymentData.csv"
+CataLogDataPath = "data\\cataLog.txt"
 
-def readData() -> User:
+def readData():
     user = User()
 
     # Xử Lý Các Account
@@ -73,8 +74,16 @@ def readData() -> User:
         payDate = str(row[3]).strip()
 
         user.Get_Debt_By_ID(ID=id).Add_Payment(amount=amount, paymentDate=payDate)
-        
-    return user
+    
+
+    # Xử lý cataLog list
+    cataLogList = []
+    data = open(CataLogDataPath, 'r', encoding='utf-8').readlines()
+    for t in data:
+        cataLogList.append(t)
+
+
+    return user, cataLogList
 
             
 def writeData(user: User):
