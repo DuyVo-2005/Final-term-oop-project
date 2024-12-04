@@ -3,13 +3,13 @@ import random
 class Account():
     def __init__(self, accountType: str, accountName: str, balance: int = 0) -> None:
         self.__initBalance = balance
-        self.__accountType = accountType
-        self.__accountName = accountName
+        self.__accountType = accountType.strip().lower()
+        self.__accountName = accountName.strip().lower()
         self.__balance = balance
         self.__transactionList = []
 
     def Get_Account_Name(self) -> str:
-        return self.__accountName
+        return self.__accountName.strip().lower()
     
     def Get_Transaction_List(self) -> list:
         return self.__transactionList
@@ -18,16 +18,16 @@ class Account():
         return self.__balance
     
     def Get_Acount_Type(self) -> str:
-        return self.__accountType
+        return self.__accountType.strip().lower()
     
     def Get_Init_Balance(self) -> int:
         return self.__initBalance
     
     def Set_Account_Name(self, newAccountName: str):
-        self.__accountName = newAccountName
+        self.__accountName = newAccountName.strip().lower()
     
     def Set_Account_Type(self, newAccountType: str):
-        self.__accountType = newAccountType
+        self.__accountType = newAccountType.strip().lower()
     
     def Set_Balance(self, newBalance: int, isTrans: bool):
         if not isTrans:
@@ -50,14 +50,12 @@ class Account():
         for trans in self.__transactionList:
             if trans.Get_ID() == ID:
                 return trans
-            
         return None        
     
     def Create_Transaction(self, cataLog: str, fluctuation: str, amount: int, time: str = "YYYY-MM-DD", note: str = "") -> bool:
         if amount > 0:
-            # Import trans chỉ khi cần thiết
             import trans
-            newTransaction = trans.Transaction(ID=self.__CreateID(), amount=amount, cataLog=cataLog, fluctuation=fluctuation, note=note, time=time)
+            newTransaction = trans.Transaction(ID=self.__CreateID(), amount=amount, cataLog=cataLog.strip(), fluctuation=fluctuation, note=note.strip(), time=time.strip())
             if fluctuation == "spend":
                 self.__balance -= amount
             else:
@@ -77,14 +75,12 @@ class Account():
             
             self.__transactionList.remove(trans)
             return True
-        
         return False
 
     def Edit_Transaction(self, ID: int, cataLog: str, fluctuation: str, amount: int, time: str = "YYYY-MM-DD", note: str = "") -> bool:
         if self.Delete_Transaction(ID):
-            # Import trans chỉ khi cần thiết
             import trans
-            newTransaction = trans.Transaction(ID=ID, amount=amount, cataLog=cataLog, fluctuation=fluctuation, note=note, time=time)
+            newTransaction = trans.Transaction(ID=ID, amount=amount, cataLog=cataLog.strip(), fluctuation=fluctuation, note=note.strip(), time=time.strip())
             if fluctuation == "spend":
                 self.__balance -= amount
             else:
@@ -93,3 +89,5 @@ class Account():
             self.__transactionList.append(newTransaction)
             return True
         return False
+    
+    
