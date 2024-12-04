@@ -71,7 +71,7 @@ class Debt(Trans):
         self.__fluctuation = fluctuation
         self.__interestRate = interestRate
         self.__dueDate = dueDate
-        self.__paymentHistory = {}
+        self.__paymentHistory = []
         days_diff = (datetime.strptime(dueDate, "%Y-%m-%d") - datetime.strptime(time, "%Y-%m-%d")).days
         self.__remainingAmount = int(amount + (amount * ((interestRate / 100) / 365) * days_diff))
 
@@ -106,23 +106,21 @@ class Debt(Trans):
 
     def Add_Payment(self, amount: int, paymentDate: str = "YYYY-MM-DD") -> bool:
         if paymentDate == "YYYY-MM-DD":
-            paymentDate = GetPresentTime() 
+            paymentDate = GetPresentTime()
         if amount > 0:
-            paymentDate = paymentDate
-            if paymentDate in self.__paymentHistory:
-                self.__paymentHistory[paymentDate] += amount
-            else:
-                self.__paymentHistory[paymentDate] = amount
+            for payment in self.__paymentHistory:
+                if paymentDate == payment['date']:
+                    payment['amount'] += amount
+                    self.__remainingAmount -= amount
+                    return True
             self.__remainingAmount -= amount
-            if self.__remainingAmount < 0:
-                self.__remainingAmount = 0
+            self.__paymentHistory.append({"date": paymentDate.strip(), "amount": amount})
             return True
         return False
     
     def Delete_Payment(self, paymentDate: str = "YYYY-MM-DD") -> bool:
-        if paymentDate in self.__paymentHistory:
-            amount = self.__paymentHistory[paymentDate]  
-            self.__remainingAmount += amount           
-            del self.__paymentHistory[paymentDate]      
-            return True
-        return False
+        for payment in self.__paymentHistory:
+                if paymentDate == payment['date']:
+                    self.__remainingAmount += payment['amount']
+                    self.__paymentHistory.remove(payment)
+                    
