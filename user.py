@@ -87,11 +87,11 @@ class User:
             return True
         return False
 
-    def Create_Transfer(self, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = ""):
+    def Create_Transfer(self, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = "", ID: int = 0):
         sourceAccount = self.Get_Account_By_Name(sourceAccountName.strip().lower())
         desAccount = self.Get_Account_By_Name(desAccountName.strip().lower())
 
-        newTransfer = Transfer(ID=self.__CreateID(), amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note.strip(), time=time.strip())
+        newTransfer = Transfer(ID=self.__CreateID() if ID == 0 else ID, amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note.strip(), time=time.strip())
         sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount, True)
         desAccount.Set_Balance(desAccount.Get_Balance() + amount, True)
         self.__transferList.append(newTransfer)
@@ -121,8 +121,8 @@ class User:
             return True
         return False
     
-    def Create_Debt(self, fluctuation: str, amount: int, dueDate: str, interestRate: float = 0.0, time: str = "YYYY-MM-DD",  note: str = ""):
-        newDebt = Debt(ID=self.__CreateID(), fluctuation=fluctuation, amount=amount, interestRate=interestRate, time=time.strip(), dueDate=dueDate.strip(), note=note.strip())
+    def Create_Debt(self, fluctuation: str, amount: int, dueDate: str, interestRate: float = 0.0, time: str = "YYYY-MM-DD",  note: str = "", ID: int = 0):
+        newDebt = Debt(ID=self.__CreateID() if ID == 0 else ID, fluctuation=fluctuation, amount=amount, interestRate=interestRate, time=time.strip(), dueDate=dueDate.strip(), note=note.strip())
         self.__debtList.append(newDebt)
         
     def Update_Debt(self, ID: int, amount: int, paymentDate: str = "YYYY-MM-DD") -> bool:
