@@ -1,5 +1,6 @@
 import account
 from GetPresentTime import GetPresentTime
+from datetime import datetime, timedelta
 
 class Trans():
     def __init__(self, ID: int, amount: int, time: str = "YYYY-MM-DD", note: str = "") -> None:
@@ -53,3 +54,70 @@ class Transfer(Trans):
     
     def Get_Des_Account(self) -> account.Account:
         return self.__desAccount
+
+        
+class Debt(Trans):
+    def __init__(self, ID: int, fluctuation: str, amount: int, interestRate: float, dueDate: str, time: str = "YYYY-MM-DD", note: str = "", isPaid: bool = False) -> None:
+        if time == "YYYY-MM-DD":
+            time = GetPresentTime()
+            
+        time_date = datetime.strptime(time, "%Y-%m-%d")
+        dueDate_date = datetime.strptime(dueDate, "%Y-%m-%d")
+        if dueDate_date < time_date:
+            dueDate_date = time_date + timedelta(days=365)
+        dueDate = dueDate_date.strftime("%Y-%m-%d")
+        
+        super().__init__(ID, amount, time, note)
+        self.__fluctuation = fluctuation
+        self.__interestRate = interestRate
+        self.__dueDate = dueDate
+        self.__isPaid = isPaid
+        self.__paymentHistory = []
+        self.__remainingAmount = int(amount + (amount * (interestRate / 365) * (datetime.strptime(dueDate, "%Y-%m-%d")  - datetime.strptime(time, "%Y-%m-%d"))))
+
+
+    def Get_Fluctuation(self) -> str:
+        return self.__fluctuation
+
+    def Get_InterestRate(self) -> float:
+        return self.__interestRate
+
+    def Get_DueDate(self) -> str:
+        return self.__dueDate
+
+    def Get_Paid(self) -> str:
+        return self.__isPaid
+
+    def Get_Remaining_Amount(self) -> int:
+        return self.__remainingAmount
+
+    def Get_PaymentHistory(self) -> list:
+        return self.__paymentHistory
+
+    def Set_Fluctuation(self, fluctuation: str):
+        self.__fluctuation = fluctuation
+
+    def Set_InterestRate(self, rate: float):
+        self.__interestRate = rate
+
+    def Set_DueDate(self, dueDate: str):
+        self.__dueDate = dueDate
+
+    def Set_Paid(self, isPaid: str):
+        self.__isPaid = isPaid
+
+
+    def Add_Payment(self, amount: int, paymentDate: str = "YYYY-MM-DD") -> bool:
+        if paymentDate == "YYYY-MM-DD":
+            paymentDate = GetPresentTime()
+        if amount > 0 and amount <= self.__remainingAmount:
+            self.__paymentHistory.append({"date": paymentDate, "amount": amount})
+            self.__remainingAmount -= amount
+            if self.__remainingAmount == 0:
+                self.__isPaid = "Paid"
+            return True
+        return False
+
+
+
+    
