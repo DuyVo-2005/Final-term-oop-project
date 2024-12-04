@@ -72,7 +72,8 @@ class Debt(Trans):
         self.__interestRate = interestRate
         self.__dueDate = dueDate
         self.__paymentHistory = []
-        self.__remainingAmount = int(amount + (amount * (interestRate / 365) * (datetime.strptime(dueDate, "%Y-%m-%d")  - datetime.strptime(time, "%Y-%m-%d"))))
+        days_diff = (datetime.strptime(dueDate, "%Y-%m-%d") - datetime.strptime(time, "%Y-%m-%d")).days
+        self.__remainingAmount = int(amount + (amount * (interestRate / 100) * days_diff))
 
 
     def Get_Fluctuation(self) -> str:
@@ -114,3 +115,6 @@ class Debt(Trans):
             return True
         return False
 
+
+
+    
