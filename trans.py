@@ -114,6 +114,8 @@ class Debt(Trans):
                     self.__remainingAmount -= amount
                     return True
             self.__remainingAmount -= amount
+            if self.__remainingAmount < 0:
+                self.__remainingAmount = 0
             self.__paymentHistory.append({"date": paymentDate.strip(), "amount": amount})
             return True
         return False
