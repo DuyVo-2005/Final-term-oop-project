@@ -7,8 +7,8 @@ class Trans():
         self.__amount = amount
         if time == "YYYY-MM-DD":
             time = GetPresentTime()
-        self.__time = time
-        self.__note = note
+        self.__time = time.strip()
+        self.__note = note.strip()
         self.__ID = ID
 
     def Get_ID(self) -> int:
@@ -18,26 +18,26 @@ class Trans():
         return self.__amount
 
     def Get_Time(self) -> str:
-        return self.__time
+        return self.__time.strip()
     
     def Get_Note(self) -> str:
-        return self.__note
+        return self.__note.strip()
     
     def Set_Note(self, newNote: str = ""):
-        self.__note = newNote
+        self.__note = newNote.strip()
 
     def Set_Time(self, newTime: str):
-        self.__time = newTime
+        self.__time = newTime.strip()
 
 
 class Transaction(Trans):
     def __init__(self, cataLog: str, ID: int, fluctuation: str, amount: int, time: str = "YYYY-MM-DD", note: str = "") -> None:
         super().__init__(ID, amount, time, note)
-        self.__cataLog = cataLog
+        self.__cataLog = cataLog.strip()
         self.__fluctuation = fluctuation
 
     def Get_Catalog(self) -> str:
-        return self.__cataLog
+        return self.__cataLog.strip()
     
     def Get_Fluctuation(self) -> str:
         return self.__fluctuation
@@ -83,9 +83,9 @@ class Debt(Trans):
         return self.__interestRate
 
     def Get_DueDate(self) -> str:
-        return self.__dueDate
+        return self.__dueDate.strip()
 
-    def Get_Paid(self) -> str:
+    def Get_Paid(self) -> bool:
         return (self.__remainingAmount == 0)
 
     def Get_Remaining_Amount(self) -> int:
@@ -101,20 +101,18 @@ class Debt(Trans):
         self.__interestRate = rate
 
     def Set_DueDate(self, dueDate: str):
-        self.__dueDate = dueDate
+        self.__dueDate = dueDate.strip()
 
 
     def Add_Payment(self, amount: int, paymentDate: str = "YYYY-MM-DD") -> bool:
         if paymentDate == "YYYY-MM-DD":
             paymentDate = GetPresentTime()
-        if amount > 0 and amount <= self.__remainingAmount:
-            self.__paymentHistory.append({"date": paymentDate, "amount": amount})
+        if amount > 0:
+            self.__paymentHistory.append({"date": paymentDate.strip(), "amount": amount})
             self.__remainingAmount -= amount
             if self.__remainingAmount < 0:
                 self.__remainingAmount = 0
             return True
         return False
-
-
 
     
