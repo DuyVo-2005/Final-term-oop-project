@@ -34,8 +34,9 @@ class User:
         return self.__debtList
     
     def Get_Account_By_Name(self, accountName: str) -> Account:
+        accountName = accountName.strip().lower()
         for account in self.__accountsList:
-            if account.Get_Account_Name() == accountName:
+            if account.Get_Account_Name().strip().lower() == accountName:
                 return account
         return None
     
@@ -61,14 +62,14 @@ class User:
         self.__accountsList.append(account)
         
     def Delete_Account(self, accountName: str) -> bool:
-        account = self.Get_Account_By_Name(accountName)
+        account = self.Get_Account_By_Name(accountName.strip().lower())
         if account:
             idList = []
             for trans in self.__transferList:
-                source = trans.Get_Source_Account().Get_Account_Name()
-                des = trans.Get_Des_Account().Get_Account_Name()
+                source = trans.Get_Source_Account().Get_Account_Name().strip().lower()
+                des = trans.Get_Des_Account().Get_Account_Name().strip().lower()
                 
-                if accountName == source or accountName == des:
+                if accountName.strip().lower() == source or accountName.strip().lower() == des:
                     idList.append(trans.Get_ID())
                     
             for id in idList:
@@ -78,15 +79,17 @@ class User:
         return False
         
     def Edit_Account(self, accountName: str, newAccountType: str, newAccountName: str, newBalance: int) -> bool:
-        if self.Get_Account_By_Name(accountName):
-            account = Account(accountType=newAccountType, accountName=newAccountName, balance=newBalance)
-            self.__accountsList.append(account)
+        account = self.Get_Account_By_Name(accountName.strip().lower())
+        if account:
+            account.Set_Account_Name(newAccountName)
+            account.Set_Account_Type(newAccountType)
+            account.Set_Balance(newBalance=newBalance, isTrans=False)
             return True
         return False
 
     def Create_Transfer(self, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = ""):
-        sourceAccount = self.Get_Account_By_Name(sourceAccountName)
-        desAccount = self.Get_Account_By_Name(desAccountName)
+        sourceAccount = self.Get_Account_By_Name(sourceAccountName.strip().lower())
+        desAccount = self.Get_Account_By_Name(desAccountName.strip().lower())
 
         newTransfer = Transfer(ID=self.__CreateID(), amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
         sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount, True)
@@ -108,8 +111,8 @@ class User:
 
     def Edit_Transfer(self, ID: int, amount: int, sourceAccountName: str, desAccountName: str, time: str = "YYYY-MM-DD", note: str = "") -> bool:
         if self.Delete_Transfer(ID):
-            sourceAccount = self.Get_Account_By_Name(sourceAccountName)
-            desAccount = self.Get_Account_By_Name(desAccountName)
+            sourceAccount = self.Get_Account_By_Name(sourceAccountName.strip().lower())
+            desAccount = self.Get_Account_By_Name(desAccountName.strip().lower())
             newTransfer = Transfer(ID=ID, amount=amount, sourceAccount=sourceAccount, desAccount=desAccount, note=note, time=time)
 
             sourceAccount.Set_Balance(sourceAccount.Get_Balance() - amount, True)
@@ -137,3 +140,11 @@ class User:
             self.__debtList.remove(debt)
             return True
         return False
+    
+    def Edit_Debt(self, ID: int, fluctuation: str, amount: int, interestRate: float, dueDate: str, time: str = "YYYY-MM-DD", note: str = "") -> bool:
+        if self.Delete_Debt(ID):
+            newDebt = Debt(ID=ID, fluctuation=fluctuation, amount=amount, interestRate=interestRate, dueDate=dueDate, time=time, note=note)
+            self.__debtList.append(newDebt)
+            return True
+        return False
+        
